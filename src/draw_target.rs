@@ -787,7 +787,12 @@ impl<Backing : AsRef<[u32]> + AsMut<[u32]>> DrawTarget<Backing> {
         let mut ids = Vec::new();
         let mut positions = Vec::new();
         for c in text.chars() {
-            let id = font.glyph_for_char(c).unwrap();
+
+            let id = match font.glyph_for_char(c) {
+                Some(val) => val,
+                None => font.glyph_for_char('?').unwrap(),
+            };
+            
             ids.push(id);
             positions.push(Point::new(start.x(), start.y()));
             start += font.advance(id).unwrap() * point_size / 24. / 96.;
